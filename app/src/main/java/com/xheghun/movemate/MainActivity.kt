@@ -17,6 +17,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.xheghun.movemate.presentation.screens.HomeScreen
+import com.xheghun.movemate.presentation.screens.SearchScreen
 import com.xheghun.movemate.presentation.ui.Routes
 import com.xheghun.movemate.presentation.ui.theme.MovemateTheme
 
@@ -35,6 +36,10 @@ class MainActivity : ComponentActivity() {
                     ) {
                         composable(route = Routes.Home.name) {
                             HomeScreen(navController)
+                        }
+
+                        composable(route = Routes.Search.name) {
+                            SearchScreen(navController)
                         }
                     }
                 }

@@ -51,6 +51,8 @@ import androidx.navigation.NavHostController
 import com.xheghun.movemate.R
 import com.xheghun.movemate.data.model.vehicleList
 import com.xheghun.movemate.presentation.custom_views.IconText
+import com.xheghun.movemate.presentation.custom_views.SearchTextField
+import com.xheghun.movemate.presentation.ui.Routes
 import com.xheghun.movemate.presentation.ui.Spacer
 import com.xheghun.movemate.presentation.ui.theme.Satoshi
 import com.xheghun.movemate.presentation.ui.theme.bluePrimary
@@ -116,63 +118,14 @@ fun HomeScreen(navController: NavHostController) {
             Spacer(15)
 
             //SEARCH Textfield
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier =
-                Modifier
-                    .clip(RoundedCornerShape(50))
-                    .background(Color.White)
-                    .padding(horizontal = 8.dp)
-            ) {
-                Icon(
-                    Icons.Default.Search,
-                    contentDescription = "search icon",
-                    modifier = Modifier.padding(6.dp),
-                    tint = bluePrimary
-                )
-                val searchTextStyle = TextStyle(
-                    fontSize = 14.sp,
-                    fontFamily = Satoshi,
-                    fontWeight = FontWeight.Normal
-                )
-                BasicTextField(
-                    value = searchText,
-                    singleLine = true,
-                    readOnly = true,
-                    textStyle = searchTextStyle,
-                    onValueChange = { newValue ->
-                        searchText = newValue
-                    },
-                    decorationBox = { innerTextField ->
-                        if (searchText.isEmpty()) {
-                            Text(
-                                text = "Enter the receipt number ...",
-                                color = colorGreyText,
-                                style = searchTextStyle,
-                                modifier = Modifier.padding(vertical = 15.dp)
-                            )
-                        } else {
-                            Box(modifier = Modifier.padding(vertical = 15.dp)) {
-                                innerTextField()
-                            }
-                        }
-                    },
-                    modifier = Modifier
-                        .weight(1f)
-                )
-                Box(
-                    Modifier
-                        .clip(CircleShape)
-                        .background(colorOrange)
-                        .padding(6.dp)
-                ) {
-                    Icon(
-                        Icons.Default.DateRange,
-                        contentDescription = "suffix icon",
-                        tint = Color.White
-                    )
-                }
-            }
+
+            SearchTextField(
+                value = searchText,
+                modifier = Modifier.clickable {
+                    navController.navigate(Routes.Search.name)
+                },
+                onValueChange = { searchText = it }
+            )
 
             Spacer(15)
 
@@ -328,7 +281,9 @@ fun HomeScreen(navController: NavHostController) {
                             ),
                             contentScale = ContentScale.Crop,
                             contentDescription = "item image",
-                            modifier = Modifier.align(Alignment.BottomEnd).size(80.dp)
+                            modifier = Modifier
+                                .align(Alignment.BottomEnd)
+                                .size(80.dp)
                         )
                     }
                 }
