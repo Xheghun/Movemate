@@ -14,6 +14,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardElevation
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -31,6 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.xheghun.movemate.data.model.Shipment
 import com.xheghun.movemate.data.model.dummyShipments
 import com.xheghun.movemate.presentation.custom_views.SearchTextField
 import com.xheghun.movemate.presentation.ui.HorizontalRule
@@ -65,54 +69,64 @@ fun SearchScreen(navController: NavController) {
             Spacer(width = 12)
         }
 
-        LazyColumn(Modifier.padding(12.dp)) {
-            items(dummyShipments()) {
-                Column {
-                    Row(Modifier.padding(vertical = 8.dp)) {
-                        Icon(
-                            Icons.Filled.Email,
-                            contentDescription = "",
-                            tint = Color.White,
-                            modifier = Modifier
-                                .size(38.dp)
-                                .clip(
-                                    CircleShape
-                                )
-                                .background(bluePrimary)
-                                .padding(
-                                    8.dp
-                                )
-                        )
-
-                        Spacer(width = 8)
-
-                        Column {
-                            Text(it.itemName, fontWeight = FontWeight.Medium)
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text(it.shipmentNumber, fontSize = 12.sp, color = colorGreyText)
-                                Box(
-                                    Modifier
-                                        .padding(horizontal = 4.dp)
-                                        .clip(CircleShape)
-                                        .background(colorGreyText)
-                                        .padding(2.dp)
-                                )
-                                Text(it.sender, fontSize = 12.sp, color = colorGreyText)
-                                Icon(
-                                    Icons.Filled.ArrowForward,
-                                    contentDescription = "",
-                                    tint = colorGreyText,
-                                    modifier = Modifier
-                                        .padding(horizontal = 4.dp)
-                                        .size(16.dp)
-                                )
-                                Text(it.receiver, fontSize = 12.sp, color = colorGreyText)
-                            }
-                        }
-                    }
-                    HorizontalRule(color = colorGreyLight)
+        Card(
+            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+            modifier = Modifier.padding(12.dp)
+        ) {
+            LazyColumn(Modifier.padding(4.dp)) {
+                items(dummyShipments()) {
+                    SearchItem(it)
                 }
             }
         }
+    }
+}
+
+@Composable
+fun SearchItem(shipment: Shipment) {
+    Column {
+        Row(Modifier.padding(vertical = 8.dp)) {
+            Icon(
+                Icons.Filled.Email,
+                contentDescription = "",
+                tint = Color.White,
+                modifier = Modifier
+                    .size(38.dp)
+                    .clip(
+                        CircleShape
+                    )
+                    .background(bluePrimary)
+                    .padding(
+                        8.dp
+                    )
+            )
+
+            Spacer(width = 8)
+
+            Column {
+                Text(shipment.itemName, fontWeight = FontWeight.Medium)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(shipment.shipmentNumber, fontSize = 12.sp, color = colorGreyText)
+                    Box(
+                        Modifier
+                            .padding(horizontal = 4.dp)
+                            .clip(CircleShape)
+                            .background(colorGreyText)
+                            .padding(2.dp)
+                    )
+                    Text(shipment.sender, fontSize = 12.sp, color = colorGreyText)
+                    Icon(
+                        Icons.Filled.ArrowForward,
+                        contentDescription = "",
+                        tint = colorGreyText,
+                        modifier = Modifier
+                            .padding(horizontal = 4.dp)
+                            .size(16.dp)
+                    )
+                    Text(shipment.receiver, fontSize = 12.sp, color = colorGreyText)
+                }
+            }
+        }
+        HorizontalRule(color = colorGreyLight)
     }
 }
