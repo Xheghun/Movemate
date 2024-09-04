@@ -4,5 +4,6 @@ enum class Routes {
     Home,
     Search,
     ShipmentHistory,
-    Calculate
+    Calculate,
+    Total
 }

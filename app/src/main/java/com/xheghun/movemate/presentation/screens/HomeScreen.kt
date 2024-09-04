@@ -106,8 +106,7 @@ fun HomeScreen(navController: NavHostController) {
 
             Spacer(15)
 
-            //SEARCH Textfield
-
+            //SEARCH
             SearchTextField(
                 enabled = false,
                 value = searchText,

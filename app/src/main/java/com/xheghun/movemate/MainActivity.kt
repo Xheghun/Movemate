@@ -18,6 +18,7 @@ import com.xheghun.movemate.presentation.screens.CalculateScreen
 import com.xheghun.movemate.presentation.screens.HomeScreen
 import com.xheghun.movemate.presentation.screens.SearchScreen
 import com.xheghun.movemate.presentation.screens.ShipmentHistoryScreen
+import com.xheghun.movemate.presentation.screens.TotalScreen
 import com.xheghun.movemate.presentation.ui.Routes
 import com.xheghun.movemate.presentation.ui.theme.MovemateTheme
 
@@ -31,7 +32,7 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     NavHost(
                         navController = navController,
-                        startDestination = Routes.Calculate.name,
+                        startDestination = Routes.Total.name,
                         modifier = Modifier.padding(innerPadding)
                     ) {
                         composable(route = Routes.Home.name) {
@@ -48,6 +49,10 @@ class MainActivity : ComponentActivity() {
 
                         composable(route = Routes.Calculate.name) {
                             CalculateScreen(navController)
+                        }
+
+                        composable(route = Routes.Total.name) {
+                            TotalScreen(navController)
                         }
                     }
                 }
