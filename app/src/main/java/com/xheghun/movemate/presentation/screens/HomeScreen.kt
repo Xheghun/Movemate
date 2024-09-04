@@ -109,6 +109,7 @@ fun HomeScreen(navController: NavHostController) {
             //SEARCH Textfield
 
             SearchTextField(
+                enabled = false,
                 value = searchText,
                 modifier = Modifier.clickable {
                     navController.navigate(Routes.Search.name)

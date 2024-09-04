@@ -1,6 +1,7 @@
 package com.xheghun.movemate.presentation.custom_views
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -27,7 +28,13 @@ import com.xheghun.movemate.presentation.ui.theme.colorGreyText
 import com.xheghun.movemate.presentation.ui.theme.colorOrange
 
 @Composable
-fun SearchTextField(value: String, onValueChange: (String) -> Unit, modifier: Modifier = Modifier) {
+fun SearchTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    hintText: String = "Enter the receipt number ...",
+    enabled: Boolean = true
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier =
@@ -51,6 +58,7 @@ fun SearchTextField(value: String, onValueChange: (String) -> Unit, modifier: Mo
             value = value,
             singleLine = true,
             readOnly = true,
+            enabled = enabled,
             textStyle = searchTextStyle,
             onValueChange = { newValue ->
                 onValueChange(newValue)
@@ -58,7 +66,7 @@ fun SearchTextField(value: String, onValueChange: (String) -> Unit, modifier: Mo
             decorationBox = { innerTextField ->
                 if (value.isEmpty()) {
                     Text(
-                        text = "Enter the receipt number ...",
+                        text = hintText,
                         color = colorGreyText,
                         style = searchTextStyle,
                         modifier = Modifier.padding(vertical = 15.dp)

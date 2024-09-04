@@ -2,5 +2,6 @@ package com.xheghun.movemate.presentation.ui
 
 enum class Routes {
     Home,
-    Search
+    Search,
+    ShipmentHistory
 }
