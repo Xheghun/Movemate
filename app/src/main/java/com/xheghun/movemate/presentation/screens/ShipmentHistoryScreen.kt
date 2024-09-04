@@ -78,7 +78,7 @@ fun ShipmentHistoryScreen(navController: NavHostController) {
                 contentDescription = "nav back",
                 modifier = Modifier
                     .clip(CircleShape)
-                    .clickable { }
+                    .clickable { navController.popBackStack() }
                     .padding(6.dp)
                     .align(Alignment.CenterStart)
             )

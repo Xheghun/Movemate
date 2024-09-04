@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.xheghun.movemate.presentation.screens.CalculateScreen
 import com.xheghun.movemate.presentation.screens.HomeScreen
 import com.xheghun.movemate.presentation.screens.SearchScreen
 import com.xheghun.movemate.presentation.screens.ShipmentHistoryScreen
@@ -30,7 +31,7 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     NavHost(
                         navController = navController,
-                        startDestination = Routes.ShipmentHistory.name,
+                        startDestination = Routes.Calculate.name,
                         modifier = Modifier.padding(innerPadding)
                     ) {
                         composable(route = Routes.Home.name) {
@@ -43,6 +44,10 @@ class MainActivity : ComponentActivity() {
 
                         composable(route = Routes.ShipmentHistory.name) {
                             ShipmentHistoryScreen(navController)
+                        }
+
+                        composable(route = Routes.Calculate.name) {
+                            CalculateScreen(navController)
                         }
                     }
                 }

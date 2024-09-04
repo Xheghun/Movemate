@@ -26,6 +26,7 @@ import com.xheghun.movemate.presentation.ui.theme.Satoshi
 import com.xheghun.movemate.presentation.ui.theme.bluePrimary
 import com.xheghun.movemate.presentation.ui.theme.colorGreyText
 import com.xheghun.movemate.presentation.ui.theme.colorOrange
+import com.xheghun.movemate.presentation.ui.theme.hintTextStyle
 
 @Composable
 fun SearchTextField(
@@ -49,37 +50,17 @@ fun SearchTextField(
             modifier = Modifier.padding(6.dp),
             tint = bluePrimary
         )
-        val searchTextStyle = TextStyle(
-            fontSize = 14.sp,
-            fontFamily = Satoshi,
-            fontWeight = FontWeight.Normal
-        )
-        BasicTextField(
+
+        MoveTextField(
             value = value,
-            singleLine = true,
-            readOnly = true,
+            onValueChange = { onValueChange(it) },
+            hintText = hintText,
+            textStyle = hintTextStyle,
             enabled = enabled,
-            textStyle = searchTextStyle,
-            onValueChange = { newValue ->
-                onValueChange(newValue)
-            },
-            decorationBox = { innerTextField ->
-                if (value.isEmpty()) {
-                    Text(
-                        text = hintText,
-                        color = colorGreyText,
-                        style = searchTextStyle,
-                        modifier = Modifier.padding(vertical = 15.dp)
-                    )
-                } else {
-                    Box(modifier = Modifier.padding(vertical = 15.dp)) {
-                        innerTextField()
-                    }
-                }
-            },
-            modifier = Modifier
-                .weight(1f)
+            modifier = Modifier.weight(1f)
         )
+
+
         Box(
             Modifier
                 .clip(CircleShape)
@@ -93,4 +74,40 @@ fun SearchTextField(
             )
         }
     }
+}
+
+@Composable
+fun MoveTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    hintText: String,
+    textStyle: TextStyle,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
+) {
+    BasicTextField(
+        value = value,
+        singleLine = true,
+        readOnly = true,
+        enabled = enabled,
+        textStyle = textStyle,
+        onValueChange = { newValue ->
+            onValueChange(newValue)
+        },
+        decorationBox = { innerTextField ->
+            if (value.isEmpty()) {
+                Text(
+                    text = hintText,
+                    color = colorGreyText,
+                    style = textStyle,
+                    modifier = Modifier.padding(vertical = 15.dp)
+                )
+            } else {
+                Box(modifier = Modifier.padding(vertical = 15.dp)) {
+                    innerTextField()
+                }
+            }
+        },
+        modifier = modifier
+    )
 }
