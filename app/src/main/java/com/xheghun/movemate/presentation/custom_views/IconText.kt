@@ -10,14 +10,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.xheghun.movemate.presentation.ui.Spacer
-import com.xheghun.movemate.presentation.ui.theme.Satoshi
-import org.w3c.dom.Text
+import com.xheghun.movemate.presentation.ui.theme.OpenSans
 
 @Composable
 fun IconText(
@@ -45,7 +44,13 @@ fun IconText(
             Spacer(width = 4)
         }
 
-        Text(text = text, fontFamily = Satoshi, fontWeight = fontWeight, fontSize = fontSize.sp, color = color)
+        Text(
+            text = text,
+            fontFamily = OpenSans,
+            fontWeight = fontWeight,
+            fontSize = fontSize.sp,
+            color = color
+        )
 
         if (endIcon != null) {
             Spacer(width = 4)

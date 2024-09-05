@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,6 +23,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,9 +34,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -43,8 +48,10 @@ import com.xheghun.movemate.data.model.Shipment
 import com.xheghun.movemate.data.model.Status
 import com.xheghun.movemate.data.model.dummyShipments
 import com.xheghun.movemate.data.model.getStatusItemCount
+import com.xheghun.movemate.presentation.custom_views.SectionHeading
 import com.xheghun.movemate.presentation.ui.Spacer
 import com.xheghun.movemate.presentation.ui.theme.bluePrimary
+import com.xheghun.movemate.presentation.ui.theme.colorBlue
 import com.xheghun.movemate.presentation.ui.theme.colorGreen
 import com.xheghun.movemate.presentation.ui.theme.colorGreyLight
 import com.xheghun.movemate.presentation.ui.theme.colorGreyText
@@ -53,7 +60,10 @@ import com.xheghun.movemate.presentation.ui.theme.colorPurple
 import com.xheghun.movemate.presentation.ui.theme.smallTextGrey
 
 @Composable
-fun ShipmentHistoryScreen(navController: NavHostController) {
+fun ShipmentHistoryScreen(
+    navController: NavHostController,
+    onBackPressed: () -> Unit = { navController.popBackStack() }
+) {
     val tabItems = listOf("All", "Completed", "In progress", "Pending", "Loading")
     var selectedTabIndex by remember { mutableIntStateOf(0) }
 
@@ -65,27 +75,42 @@ fun ShipmentHistoryScreen(navController: NavHostController) {
         Box(
             Modifier
                 .background(bluePrimary)
-                .padding(horizontal = 12.dp, vertical = 12.dp)
+                .padding(horizontal = 12.dp)
+                .padding(top = 12.dp)
                 .fillMaxWidth()
         ) {
             Text(
-                text = "Shipment History",
+                text = "Shipment history",
                 fontWeight = FontWeight.Bold,
+                color = Color.White,
                 modifier = Modifier.align(Alignment.Center)
             )
             Icon(
                 Icons.Filled.KeyboardArrowLeft,
                 contentDescription = "nav back",
+                tint = Color.White,
                 modifier = Modifier
                     .clip(CircleShape)
-                    .clickable { navController.popBackStack() }
+                    .clickable { onBackPressed() }
                     .padding(6.dp)
                     .align(Alignment.CenterStart)
             )
         }
         ScrollableTabRow(
+            edgePadding = 0.dp,
             selectedTabIndex = selectedTabIndex,
-            containerColor = bluePrimary
+            containerColor = bluePrimary,
+            indicator = { tabPositions ->
+                val selectedTabPosition = tabPositions[selectedTabIndex]
+
+                Box(
+                    Modifier
+                        .tabIndicatorOffset(selectedTabPosition) // Aligns with selected tab
+                        .fillMaxWidth()
+                        .height(4.dp)  // Height of the indicator
+                        .background(colorOrange) // Custom indicator color
+                )
+            }
         ) {
             tabItems.forEachIndexed { index, title ->
                 Tab(selected = selectedTabIndex == index,
@@ -103,7 +128,10 @@ fun ShipmentHistoryScreen(navController: NavHostController) {
                         }
                     }) {
 
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(vertical = 6.dp)
+                    ) {
                         Text(
                             text = title,
                             color = if (selectedTabIndex == index) Color.White else colorPurple,
@@ -114,7 +142,7 @@ fun ShipmentHistoryScreen(navController: NavHostController) {
                         Text(
                             text = "${getStatusItemCount(title)}",
                             fontSize = 10.sp,
-                            color = if (selectedTabIndex == index) Color.White else colorPurple,
+                            color = if (selectedTabIndex == index) Color.White else bluePrimary,
                             modifier = Modifier
                                 .clip(
                                     RoundedCornerShape(50.dp)
@@ -128,26 +156,22 @@ fun ShipmentHistoryScreen(navController: NavHostController) {
             }
         }
 
-        Spacer(10)
+        Column(Modifier.padding(12.dp)) {
+            SectionHeading(title = "Shipments", subTitle = "")
 
-        Text(
-            text = "Shipments",
-            fontWeight = FontWeight.Bold,
-            fontSize = 16.sp,
-            modifier = Modifier.padding(horizontal = 12.dp)
-        )
+            Spacer(10)
 
-        Spacer(10)
-
-        //SHIPPING LIST
-        LazyColumn(Modifier.padding(horizontal = 12.dp)) {
-            items(shipments) {
-                Card(
-                    Modifier
-                        .padding(bottom = 10.dp)
-                        .fillMaxWidth()
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+            //SHIPPING LIST
+            LazyColumn() {
+                items(shipments) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically, modifier = Modifier
+                            .padding(vertical = 6.dp)
+                            .shadow(2.dp, RoundedCornerShape(8.dp))
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(Color.White)
+                            .padding(4.dp)
+                    ) {
                         Column(
                             Modifier
                                 .padding(10.dp)
@@ -188,7 +212,7 @@ fun ShipmentHistoryScreen(navController: NavHostController) {
                             }
                         }
                         Image(
-                            painter = painterResource(id = R.drawable.tractor),
+                            painter = painterResource(id = R.drawable.move_box),
                             contentDescription = "",
                             modifier = Modifier
                                 .size(50.dp)
@@ -212,9 +236,9 @@ fun StatusIndicator(statusText: String) {
     }
 
     val icon: ImageVector = when (status) {
-        "in-progress" -> Icons.Filled.Refresh
-        "pending" -> Icons.Filled.Refresh
-        else -> Icons.Filled.Info
+        "in-progress" -> ImageVector.vectorResource(R.drawable.sync)
+        "pending" -> ImageVector.vectorResource(R.drawable.recent)
+        else -> ImageVector.vectorResource(R.drawable.time_quarter)
     }
 
     Row(

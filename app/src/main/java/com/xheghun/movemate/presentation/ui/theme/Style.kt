@@ -6,13 +6,13 @@ import androidx.compose.ui.unit.sp
 
 
 val smallTextGrey = TextStyle(
-    fontFamily = Satoshi,
+    fontFamily = OpenSans,
     fontSize = 12.sp,
     color = colorGreyText
 )
 
 val hintTextStyle = TextStyle(
     fontSize = 14.sp,
-    fontFamily = Satoshi,
+    fontFamily = OpenSans,
     fontWeight = FontWeight.Normal
 )

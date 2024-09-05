@@ -66,7 +66,9 @@ fun TotalScreen(navController: NavController) {
             fontSize = 14.sp,
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Medium,
-            modifier = Modifier.width(220.dp).padding(vertical = 12.dp)
+            modifier = Modifier
+                .width(220.dp)
+                .padding(vertical = 12.dp)
         )
         Button(
             modifier = Modifier.fillMaxWidth(),

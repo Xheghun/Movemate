@@ -15,12 +15,12 @@
           <targets>
             <Target type="DEFAULT_BOOT">
               <handle>
-                <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\xhegh\.android\avd\Pixel_7_Pro_API_32.avd" />
+                <DeviceId pluginId="PhysicalDevice" identifier="serial=RF8M32ZRZZZ" />
               </handle>
             </Target>
             <Target type="DEFAULT_BOOT">
               <handle>
-                <DeviceId pluginId="PhysicalDevice" identifier="serial=RF8M32ZRZZZ" />
+                <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\xhegh\.android\avd\Pixel_7_Pro_API_32.avd" />
               </handle>
             </Target>
           </targets>

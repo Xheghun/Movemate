@@ -9,12 +9,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -26,23 +24,30 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.xheghun.movemate.R
 import com.xheghun.movemate.data.model.Shipment
 import com.xheghun.movemate.data.model.dummyShipments
 import com.xheghun.movemate.presentation.custom_views.SearchTextField
 import com.xheghun.movemate.presentation.ui.HorizontalRule
 import com.xheghun.movemate.presentation.ui.Spacer
 import com.xheghun.movemate.presentation.ui.theme.bluePrimary
+import com.xheghun.movemate.presentation.ui.theme.colorGray
 import com.xheghun.movemate.presentation.ui.theme.colorGreyLight
 import com.xheghun.movemate.presentation.ui.theme.colorGreyText
 
 @Composable
 fun SearchScreen(navController: NavController) {
     var searchValue by remember { mutableStateOf("") }
+    var searchResult by remember { mutableStateOf(dummyShipments().subList(0, 6)) }
+
     Column {
         //HEADER SECTION
         Row(
@@ -66,25 +71,28 @@ fun SearchScreen(navController: NavController) {
             Spacer(width = 12)
         }
 
-        Card(
-            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-            modifier = Modifier.padding(12.dp)
+        LazyColumn(
+            Modifier
+                .padding(12.dp)
+                .shadow(2.dp, RoundedCornerShape(8.dp))
+                .clip(RoundedCornerShape(8.dp))
+                .background(Color.White)
+                .padding(10.dp)
         ) {
-            LazyColumn(Modifier.padding(4.dp)) {
-                items(dummyShipments()) {
-                    SearchItem(it)
-                }
+            items(searchResult) {
+                SearchItem(it)
             }
         }
+
     }
 }
 
 @Composable
 fun SearchItem(shipment: Shipment) {
-    Column {
+    Column(Modifier.background(Color.White)) {
         Row(Modifier.padding(vertical = 8.dp)) {
             Icon(
-                Icons.Filled.Email,
+                ImageVector.vectorResource(id = R.drawable.file_box),
                 contentDescription = "",
                 tint = Color.White,
                 modifier = Modifier
@@ -101,9 +109,9 @@ fun SearchItem(shipment: Shipment) {
             Spacer(width = 8)
 
             Column {
-                Text(shipment.itemName, fontWeight = FontWeight.Medium)
+                Text(shipment.itemName, fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(shipment.shipmentNumber, fontSize = 12.sp, color = colorGreyText)
+                    Text(shipment.shipmentNumber, fontSize = 12.sp, color = colorGray)
                     Box(
                         Modifier
                             .padding(horizontal = 4.dp)
@@ -111,16 +119,16 @@ fun SearchItem(shipment: Shipment) {
                             .background(colorGreyText)
                             .padding(2.dp)
                     )
-                    Text(shipment.sender, fontSize = 12.sp, color = colorGreyText)
+                    Text(shipment.sender, fontSize = 12.sp, color = colorGray)
                     Icon(
                         Icons.Filled.ArrowForward,
                         contentDescription = "",
-                        tint = colorGreyText,
+                        tint = colorGray,
                         modifier = Modifier
                             .padding(horizontal = 4.dp)
-                            .size(16.dp)
+                            .size(12.dp)
                     )
-                    Text(shipment.receiver, fontSize = 12.sp, color = colorGreyText)
+                    Text(shipment.receiver, fontSize = 12.sp, color = colorGray)
                 }
             }
         }

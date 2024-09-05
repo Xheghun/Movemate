@@ -56,7 +56,7 @@ import com.xheghun.movemate.presentation.ui.theme.hintTextStyle
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun CalculateScreen(navController: NavController) {
+fun CalculateScreen(navController: NavController, onBackPressed: () -> Unit = { navController.popBackStack() }) {
 
     val categoryOption =
         listOf("Document", "Glass", "Liquid", "Food", "Electronics", "Product", "Others")
@@ -83,7 +83,7 @@ fun CalculateScreen(navController: NavController) {
                 contentDescription = "nav back",
                 modifier = Modifier
                     .clip(CircleShape)
-                    .clickable { }
+                    .clickable { onBackPressed() }
                     .padding(6.dp)
                     .align(Alignment.CenterStart)
             )

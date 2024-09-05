@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -19,10 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.xheghun.movemate.presentation.ui.theme.Satoshi
 import com.xheghun.movemate.presentation.ui.theme.bluePrimary
 import com.xheghun.movemate.presentation.ui.theme.colorGreyText
 import com.xheghun.movemate.presentation.ui.theme.colorOrange
@@ -47,7 +45,9 @@ fun SearchTextField(
         Icon(
             Icons.Default.Search,
             contentDescription = "search icon",
-            modifier = Modifier.padding(6.dp),
+            modifier = Modifier
+                .padding(6.dp)
+                .size(20.dp),
             tint = bluePrimary
         )
 
@@ -60,7 +60,6 @@ fun SearchTextField(
             modifier = Modifier.weight(1f)
         )
 
-
         Box(
             Modifier
                 .clip(CircleShape)
@@ -70,7 +69,8 @@ fun SearchTextField(
             Icon(
                 Icons.Default.DateRange,
                 contentDescription = "suffix icon",
-                tint = Color.White
+                tint = Color.White,
+                modifier = Modifier.size(20.dp)
             )
         }
     }
