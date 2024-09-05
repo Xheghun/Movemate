@@ -32,7 +32,7 @@ fun SearchTextField(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     hintText: String = "Enter the receipt number ...",
-    enabled: Boolean = true
+    enabled: Boolean = false
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -88,7 +88,7 @@ fun MoveTextField(
     BasicTextField(
         value = value,
         singleLine = true,
-        readOnly = true,
+        readOnly = !enabled,
         enabled = enabled,
         textStyle = textStyle,
         onValueChange = { newValue ->

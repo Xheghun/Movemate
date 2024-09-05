@@ -1,5 +1,15 @@
 package com.xheghun.movemate.presentation.screens
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -8,6 +18,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -18,25 +29,26 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.outlined.Notifications
-import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -58,111 +70,148 @@ import com.xheghun.movemate.presentation.ui.theme.colorGray
 import com.xheghun.movemate.presentation.ui.theme.colorGreyText
 import com.xheghun.movemate.presentation.ui.theme.colorOrange
 import com.xheghun.movemate.presentation.ui.theme.colorPurple
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(navController: NavHostController) {
-
     var currentNavIndex by remember { mutableIntStateOf(0) }
-
     val navItems = listOf("Home", "Calculate", "Shipment", "Profile")
+    var isTabsVisible by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+        isTabsVisible = true
+    }
 
     Column {
-        when (currentNavIndex) {
-            1 -> {
-                CalculateScreen(navController) {
-                    currentNavIndex = 0
-                }
-            }
-
-            2 -> {
-                ShipmentHistoryScreen(navController) {
-                    currentNavIndex = 0
-                }
-            }
-
-            else -> HomeView(navController, Modifier.weight(1f))
-        }
+        HomeView(navController, Modifier.weight(1f))
 
         //NAV
-        TabRow(selectedTabIndex = currentNavIndex, modifier = Modifier.background(colorOrange)) {
-            navItems.forEachIndexed { index, title ->
-                Tab(
-                    modifier = Modifier.height(60.dp),
-                    unselectedContentColor = colorGreyText,
-                    selectedContentColor = colorPurple,
-                    selected = currentNavIndex == index,
-                    icon = {
-                        val iconModifier = Modifier.size(20.dp)
+        AnimatedContent(
+            targetState = isTabsVisible,
+            transitionSpec = {
+                if (targetState) {
+                    slideInVertically(initialOffsetY = { it }) + fadeIn() togetherWith
+                            slideOutVertically(targetOffsetY = { -it }) + fadeOut()
+                } else {
+                    slideInVertically(initialOffsetY = { -it }) + fadeIn() togetherWith
+                            slideOutVertically(targetOffsetY = { it }) + fadeOut()
+                }.using(SizeTransform(clip = false))
+            },
+        ) { targetVisible ->
+            if (targetVisible) {
+                TabRow(
+                    selectedTabIndex = currentNavIndex,
+                    indicator = { tabPositions ->
+                        val selectedTabPosition = tabPositions[currentNavIndex]
 
-                        when (index) {
-                            0 -> Icon(
-                                painter = painterResource(id = R.drawable.home_outline),
-                                contentDescription = "",
-                                modifier = iconModifier
-                            )
-
-                            1 -> Icon(
-                                painter = painterResource(id = R.drawable.calculator),
-                                contentDescription = "",
-                                modifier = iconModifier
-                            )
-
-                            2 -> Icon(
-                                painter = painterResource(id = R.drawable.recent),
-                                contentDescription = "",
-                                modifier = iconModifier
-                            )
-
-                            3 -> Icon(
-                                painter = painterResource(id = R.drawable.person_outline),
-                                contentDescription = "",
-                                modifier = iconModifier
-                            )
-                        }
-                    },
-                    text = {
-                        Text(
-                            title,
-                            fontWeight =
-                            if (currentNavIndex == index) FontWeight.SemiBold else FontWeight.Normal
+                        Box(
+                            Modifier
+                                .tabIndicatorOffset(selectedTabPosition) // Aligns with selected tab
+                                .fillMaxWidth()
+                                .offset(y = (-56).dp)
+                                .height(4.dp)  // Height of the indicator
+                                .background(colorPurple) // Custom indicator color
                         )
-                    },
-                    onClick = { currentNavIndex = index })
+                    }) {
+                    navItems.forEachIndexed { index, title ->
+                        Tab(
+                            modifier = Modifier.height(60.dp),
+                            unselectedContentColor = colorGreyText,
+                            selectedContentColor = colorPurple,
+                            selected = currentNavIndex == index,
+                            icon = {
+                                val iconModifier = Modifier.size(20.dp)
+
+                                when (index) {
+                                    0 -> Icon(
+                                        painter = painterResource(id = R.drawable.home_outline),
+                                        contentDescription = "",
+                                        modifier = iconModifier
+                                    )
+
+                                    1 -> Icon(
+                                        painter = painterResource(id = R.drawable.calculator),
+                                        contentDescription = "",
+                                        modifier = iconModifier
+                                    )
+
+                                    2 -> Icon(
+                                        painter = painterResource(id = R.drawable.recent),
+                                        contentDescription = "",
+                                        modifier = iconModifier
+                                    )
+
+                                    3 -> Icon(
+                                        painter = painterResource(id = R.drawable.person_outline),
+                                        contentDescription = "",
+                                        modifier = iconModifier
+                                    )
+                                }
+                            },
+                            text = {
+                                Text(
+                                    title,
+                                    fontWeight =
+                                    if (currentNavIndex == index) FontWeight.SemiBold else FontWeight.Normal
+                                )
+                            },
+                            onClick = {
+                                currentNavIndex = index
+                                scope.launch(Dispatchers.Main) {
+                                    delay(300)
+                                    when (index) {
+                                        1 -> {
+                                            isTabsVisible = false
+                                            navController.navigate(Routes.Calculate.name)
+                                        }
+
+                                        2 -> {
+                                            isTabsVisible = false
+                                            navController.navigate(Routes.ShipmentHistory.name)
+                                        }
+                                    }
+                                }
+                            })
+                    }
+                }
             }
         }
     }
 }
 
-@Composable
-fun ShippingInfo(title: String, text: String, showIcon: Boolean = true, drawableResource: Int = 0) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        if (showIcon)
-            Image(
-                painter = painterResource(id = drawableResource),
-                contentDescription = "$title icon",
-                modifier = Modifier
-                    .clip(
-                        CircleShape
-                    )
-                    .size(28.dp)
-            )
-        if (showIcon)
-            Spacer(width = 4)
-        Column {
-            Text(text = title, fontSize = 12.sp, color = colorGray)
-            Text(text = text, fontSize = 13.sp, color = Color.Black, fontWeight = FontWeight.Normal)
-        }
-    }
-}
 
 @Composable
 fun HomeView(navController: NavHostController, modifier: Modifier = Modifier) {
+    val headerOffset = remember { Animatable(-300f) }
+    val contentOffset = remember { Animatable(300f) }
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+        scope.launch {
+            headerOffset.animateTo(
+                targetValue = 0f,
+                animationSpec = tween(durationMillis = 500, easing = FastOutSlowInEasing)
+            )
+        }
+
+        scope.launch {
+            contentOffset.animateTo(
+                targetValue = 0f,
+                animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
+            )
+        }
+    }
+
     var searchText by remember { mutableStateOf("") }
 
     Column(modifier) {
         //HEADER
         Column(
             Modifier
+                .offset(y = headerOffset.value.dp)
                 .fillMaxWidth()
                 .background(bluePrimary)
                 .padding(12.dp)
@@ -228,7 +277,11 @@ fun HomeView(navController: NavHostController, modifier: Modifier = Modifier) {
         Spacer(20)
 
         //BODY
-        Column(Modifier.padding(horizontal = 12.dp)) {
+        Column(
+            Modifier
+                .offset(y = contentOffset.value.dp)
+                .padding(horizontal = 12.dp)
+        ) {
             SectionHeading(title = "Tracking", subTitle = "")
 
             Spacer(15)
@@ -331,6 +384,41 @@ fun HomeView(navController: NavHostController, modifier: Modifier = Modifier) {
 
             LazyRow() {
                 items(vehicleList()) {
+                    val scale = remember { Animatable(0.2f) }
+                    val offsetX = remember { Animatable(200f) }
+                    val offsetY = remember { Animatable(-200f) }
+
+                    LaunchedEffect(Unit) {
+                        scope.launch {
+                            scale.animateTo(
+                                targetValue = 1f,
+                                animationSpec = tween(
+                                    durationMillis = 600,
+                                    easing = FastOutSlowInEasing
+                                )
+                            )
+                        }
+
+                        scope.launch {
+                            offsetX.animateTo(
+                                targetValue = 0f,
+                                animationSpec = tween(
+                                    durationMillis = 600,
+                                    easing = FastOutSlowInEasing
+                                )
+                            )
+                        }
+
+                        scope.launch {
+                            offsetY.animateTo(
+                                targetValue = 0f,
+                                animationSpec = tween(
+                                    durationMillis = 600,
+                                    easing = FastOutSlowInEasing
+                                )
+                            )
+                        }
+                    }
 
                     Box(
                         Modifier
@@ -366,11 +454,35 @@ fun HomeView(navController: NavHostController, modifier: Modifier = Modifier) {
                             modifier = Modifier
                                 .align(Alignment.BottomEnd)
                                 .size(80.dp)
+                                .scale(scale.value)
+                                .offset(x = offsetX.value.dp, y = offsetY.value.dp)
                         )
                     }
                 }
             }
         }
 
+    }
+}
+
+@Composable
+fun ShippingInfo(title: String, text: String, showIcon: Boolean = true, drawableResource: Int = 0) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        if (showIcon)
+            Image(
+                painter = painterResource(id = drawableResource),
+                contentDescription = "$title icon",
+                modifier = Modifier
+                    .clip(
+                        CircleShape
+                    )
+                    .size(28.dp)
+            )
+        if (showIcon)
+            Spacer(width = 4)
+        Column {
+            Text(text = title, fontSize = 12.sp, color = colorGray)
+            Text(text = text, fontSize = 13.sp, color = Color.Black, fontWeight = FontWeight.Normal)
+        }
     }
 }

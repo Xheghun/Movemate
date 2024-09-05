@@ -17,7 +17,7 @@ fun SectionHeading(title: String, subTitle: String) {
         )
         if(subTitle.isNotEmpty())
         Text(
-            text = title,
+            text = subTitle,
             color = colorGreyText,
             fontSize = 16.sp
         )

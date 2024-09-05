@@ -3,6 +3,9 @@ package com.xheghun.movemate.presentation.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.draggable
+import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -67,11 +70,32 @@ fun ShipmentHistoryScreen(
     val tabItems = listOf("All", "Completed", "In progress", "Pending", "Loading")
     var selectedTabIndex by remember { mutableIntStateOf(0) }
 
+    var isSwipeToTheLeft by remember { mutableStateOf(false) }
+    val dragState = rememberDraggableState(onDelta = { delta ->
+        isSwipeToTheLeft = delta > 0
+    })
+
     var shipments: List<Shipment> by remember {
         mutableStateOf(dummyShipments())
     }
 
-    Column(Modifier.fillMaxWidth()) {
+    val filterShipment: (Int) -> Unit = { index ->
+        //TODO("Find a more efficient approach")
+        shipments = if (index > 0) {
+            dummyShipments().filter {
+                it.status.name.lowercase().replace("_", " ")
+                    .capitalize() == tabItems[selectedTabIndex]
+            }
+        } else {
+            dummyShipments()
+        }
+    }
+
+    Column(
+        Modifier
+            .fillMaxWidth()
+    ) {
+        //APP BAR
         Box(
             Modifier
                 .background(bluePrimary)
@@ -96,6 +120,8 @@ fun ShipmentHistoryScreen(
                     .align(Alignment.CenterStart)
             )
         }
+
+        //TABS
         ScrollableTabRow(
             edgePadding = 0.dp,
             selectedTabIndex = selectedTabIndex,
@@ -117,15 +143,8 @@ fun ShipmentHistoryScreen(
                     modifier = Modifier.padding(end = 10.dp),
                     onClick = {
                         selectedTabIndex = index
-                        //TODO("Find a more efficient approach")
-                        if (index > 0) {
-                            shipments = dummyShipments().filter {
-                                it.status.name.lowercase().replace("_", " ")
-                                    .capitalize() == tabItems[selectedTabIndex]
-                            }
-                        } else {
-                            shipments = dummyShipments()
-                        }
+                        filterShipment(index)
+
                     }) {
 
                     Row(
@@ -148,7 +167,7 @@ fun ShipmentHistoryScreen(
                                     RoundedCornerShape(50.dp)
                                 )
                                 .background(if (selectedTabIndex == index) colorOrange else colorPurple)
-                                .padding(horizontal = 8.dp)
+                                .padding(horizontal = 12.dp)
 
                         )
                     }
@@ -156,7 +175,25 @@ fun ShipmentHistoryScreen(
             }
         }
 
-        Column(Modifier.padding(12.dp)) {
+        //BODY
+        Column(Modifier
+            .padding(12.dp)
+            .draggable(
+                state = dragState,
+                orientation = Orientation.Horizontal,
+                onDragStarted = {},
+                onDragStopped = {
+                    //TODO("a better approach can be implemented as this method would cause a recomposition even when we're at the last item")
+                    if (isSwipeToTheLeft) {
+                        selectedTabIndex = (selectedTabIndex - 1).coerceAtLeast(0)
+                        filterShipment(selectedTabIndex)
+                    } else {
+                        selectedTabIndex = (selectedTabIndex + 1).coerceAtMost(4)
+                        filterShipment(selectedTabIndex)
+                    }
+
+                }
+            )) {
             SectionHeading(title = "Shipments", subTitle = "")
 
             Spacer(10)

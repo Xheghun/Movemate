@@ -74,6 +74,9 @@ fun dummyShipments(): List<Shipment> {
 fun getStatusItemCount(status: String): Int {
     //TODO("Find a scalable solution to this filter")
     return dummyShipments().filter {
-        it.status.name.lowercase().replace("_", " ").capitalize() == status
+        if (status.lowercase() == "all")
+            true
+        else
+            it.status.name.lowercase().replace("_", " ").capitalize() == status
     }.size
 }

@@ -1,9 +1,13 @@
 package com.xheghun.movemate.presentation.screens
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,9 +21,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,11 +48,25 @@ import com.xheghun.movemate.presentation.ui.theme.bluePrimary
 import com.xheghun.movemate.presentation.ui.theme.colorGray
 import com.xheghun.movemate.presentation.ui.theme.colorGreyLight
 import com.xheghun.movemate.presentation.ui.theme.colorGreyText
+import kotlinx.coroutines.launch
 
 @Composable
 fun SearchScreen(navController: NavController) {
     var searchValue by remember { mutableStateOf("") }
     var searchResult by remember { mutableStateOf(dummyShipments().subList(0, 6)) }
+
+
+    val searchListOffset = remember { Animatable(300f) }
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+        scope.launch {
+            searchListOffset.animateTo(
+                targetValue = 0f,
+                animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
+            )
+        }
+    }
 
     Column {
         //HEADER SECTION
@@ -65,6 +85,7 @@ fun SearchScreen(navController: NavController) {
             }
             SearchTextField(
                 value = searchValue,
+                enabled = true,
                 onValueChange = { searchValue = it },
                 modifier = Modifier.weight(1f)
             )
@@ -73,6 +94,7 @@ fun SearchScreen(navController: NavController) {
 
         LazyColumn(
             Modifier
+                .offset(y = searchListOffset.value.dp)
                 .padding(12.dp)
                 .shadow(2.dp, RoundedCornerShape(8.dp))
                 .clip(RoundedCornerShape(8.dp))

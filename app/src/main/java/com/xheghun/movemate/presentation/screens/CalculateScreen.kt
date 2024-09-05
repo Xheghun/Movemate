@@ -37,6 +37,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
@@ -47,6 +48,7 @@ import androidx.navigation.NavController
 import com.xheghun.movemate.R
 import com.xheghun.movemate.presentation.custom_views.MoveTextField
 import com.xheghun.movemate.presentation.custom_views.SectionHeading
+import com.xheghun.movemate.presentation.ui.Routes
 import com.xheghun.movemate.presentation.ui.Spacer
 import com.xheghun.movemate.presentation.ui.theme.bluePrimary
 import com.xheghun.movemate.presentation.ui.theme.colorGreyLight
@@ -56,7 +58,10 @@ import com.xheghun.movemate.presentation.ui.theme.hintTextStyle
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun CalculateScreen(navController: NavController, onBackPressed: () -> Unit = { navController.popBackStack() }) {
+fun CalculateScreen(
+    navController: NavController,
+    onBackPressed: () -> Unit = { navController.popBackStack() }
+) {
 
     val categoryOption =
         listOf("Document", "Glass", "Liquid", "Food", "Electronics", "Product", "Others")
@@ -75,12 +80,14 @@ fun CalculateScreen(navController: NavController, onBackPressed: () -> Unit = { 
             Text(
                 text = "Calculate",
                 fontWeight = FontWeight.Bold,
+                color = Color.White,
                 modifier = Modifier.align(Alignment.Center)
             )
 
             Icon(
                 Icons.Filled.KeyboardArrowLeft,
                 contentDescription = "nav back",
+                tint = Color.White,
                 modifier = Modifier
                     .clip(CircleShape)
                     .clickable { onBackPressed() }
@@ -99,13 +106,15 @@ fun CalculateScreen(navController: NavController, onBackPressed: () -> Unit = { 
                     .verticalScroll(scrollState)
             ) {
 
-                SectionHeading("Packaging", "")
+                SectionHeading("Destination", "")
 
                 Spacer(8)
-                Card(
+                Column(
                     Modifier
+                        .shadow(0.5.dp, RoundedCornerShape(8.dp))
+                        .clip(RoundedCornerShape(8.dp))
                         .background(Color.White)
-                        .padding(12.dp)
+                        .padding(10.dp)
                 ) {
                     IconTextField(
                         value = "",
@@ -132,8 +141,11 @@ fun CalculateScreen(navController: NavController, onBackPressed: () -> Unit = { 
 
                 Spacer(12)
 
-                Card(
-                    shape = RoundedCornerShape(6.dp)
+                Column(
+                    Modifier
+                        .shadow(0.5.dp, RoundedCornerShape(8.dp))
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(Color.White)
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -203,7 +215,7 @@ fun CalculateScreen(navController: NavController, onBackPressed: () -> Unit = { 
             //BUTTON
             Button(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = { },
+                onClick = { navController.navigate(Routes.Total.name) },
                 colors = ButtonDefaults.buttonColors(containerColor = colorOrange)
             ) {
                 Text("Calculate", modifier = Modifier.padding(vertical = 8.dp))

@@ -72,7 +72,11 @@ fun TotalScreen(navController: NavController) {
         )
         Button(
             modifier = Modifier.fillMaxWidth(),
-            onClick = { navController.navigate(Routes.Home.name) },
+            onClick = {
+                navController.navigate(Routes.Home.name) {
+                    popUpTo(0) { inclusive = true }
+                }
+            },
             colors = ButtonDefaults.buttonColors(containerColor = colorOrange)
         ) {
             Text("Back to home", modifier = Modifier.padding(vertical = 8.dp))
