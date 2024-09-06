@@ -10,6 +10,8 @@ fun vehicleList(): List<Vehicle> {
     return buildList {
         for (i in 1..3) {
             add(Vehicle("Ocean Freight", "International"))
+            add(Vehicle("Cargo Freight", "Reliable"))
+            add(Vehicle("Air Freight", "International"))
         }
     }
 }

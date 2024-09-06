@@ -1,7 +1,9 @@
 package com.xheghun.movemate
 
+import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,6 +23,8 @@ import com.xheghun.movemate.presentation.screens.ShipmentHistoryScreen
 import com.xheghun.movemate.presentation.screens.TotalScreen
 import com.xheghun.movemate.presentation.ui.Routes
 import com.xheghun.movemate.presentation.ui.theme.MovemateTheme
+import com.xheghun.movemate.presentation.ui.theme.colorStatusBar
+import com.xheghun.movemate.presentation.ui.updateStatusBarColor
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,23 +39,29 @@ class MainActivity : ComponentActivity() {
                         startDestination = Routes.Home.name,
                         modifier = Modifier.padding(innerPadding)
                     ) {
+
                         composable(route = Routes.Home.name) {
+                            updateStatusBarColor(colorStatusBar)
                             HomeScreen(navController)
                         }
 
                         composable(route = Routes.Search.name) {
+                            updateStatusBarColor(colorStatusBar)
                             SearchScreen(navController)
                         }
 
                         composable(route = Routes.ShipmentHistory.name) {
+                            updateStatusBarColor(colorStatusBar)
                             ShipmentHistoryScreen(navController)
                         }
 
                         composable(route = Routes.Calculate.name) {
+                            updateStatusBarColor(colorStatusBar)
                             CalculateScreen(navController)
                         }
 
                         composable(route = Routes.Total.name) {
+                            updateStatusBarColor(Color.WHITE)
                             TotalScreen(navController)
                         }
                     }

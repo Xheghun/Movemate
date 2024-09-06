@@ -10,3 +10,5 @@ val colorPurple = Color(0xFF705fa8)
 val colorGreen = Color(0xFF70d4a4)
 val colorBlue = Color(0xFF4589ca)
 val colorGray = Color(0xFF8c8b8e)
+
+val colorStatusBar = android.graphics.Color.rgb(73, 51, 145)

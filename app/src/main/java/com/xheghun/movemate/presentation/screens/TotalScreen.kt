@@ -1,7 +1,10 @@
 package com.xheghun.movemate.presentation.screens
 
+import android.graphics.Color
+import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.Easing
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
@@ -21,6 +24,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -31,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -43,14 +48,16 @@ import com.xheghun.movemate.presentation.ui.Spacer
 import com.xheghun.movemate.presentation.ui.theme.colorGreen
 import com.xheghun.movemate.presentation.ui.theme.colorGreyText
 import com.xheghun.movemate.presentation.ui.theme.colorOrange
+import com.xheghun.movemate.presentation.ui.theme.colorStatusBar
+import com.xheghun.movemate.presentation.ui.updateStatusBarColor
 import kotlinx.coroutines.launch
-import kotlin.math.pow
 
 @Composable
 fun TotalScreen(navController: NavController) {
 
     val buttonScale = remember { Animatable(1f) }
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current as ComponentActivity
 
     val targetPrice = 1458f
 

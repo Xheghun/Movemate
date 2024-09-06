@@ -67,6 +67,7 @@ import com.xheghun.movemate.presentation.ui.Routes
 import com.xheghun.movemate.presentation.ui.Spacer
 import com.xheghun.movemate.presentation.ui.theme.bluePrimary
 import com.xheghun.movemate.presentation.ui.theme.colorGray
+import com.xheghun.movemate.presentation.ui.theme.colorGreen
 import com.xheghun.movemate.presentation.ui.theme.colorGreyText
 import com.xheghun.movemate.presentation.ui.theme.colorOrange
 import com.xheghun.movemate.presentation.ui.theme.colorPurple
@@ -354,7 +355,15 @@ fun HomeView(navController: NavHostController, modifier: Modifier = Modifier) {
                             title = "Time",
                             text = "2 days - 3 days",
                             drawableResource = R.drawable.open_package
-                        )
+                        ) {
+                            Box(
+                                Modifier
+                                    .padding(end = 3.dp)
+                                    .clip(CircleShape)
+                                    .size(5.dp)
+                                    .background(colorGreen)
+                            )
+                        }
                         Spacer(10)
                         ShippingInfo(
                             showIcon = false,
@@ -374,7 +383,7 @@ fun HomeView(navController: NavHostController, modifier: Modifier = Modifier) {
                     color = colorOrange,
                     modifier = Modifier
                         .clickable { }
-                        .padding(vertical = 10.dp)
+                        .padding(10.dp)
                 )
             }
 
@@ -468,7 +477,13 @@ fun HomeView(navController: NavHostController, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun ShippingInfo(title: String, text: String, showIcon: Boolean = true, drawableResource: Int = 0) {
+fun ShippingInfo(
+    title: String,
+    text: String,
+    showIcon: Boolean = true,
+    drawableResource: Int = 0,
+    icon: (@Composable () -> Unit)? = null
+) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         if (showIcon)
             Image(
@@ -484,7 +499,16 @@ fun ShippingInfo(title: String, text: String, showIcon: Boolean = true, drawable
             Spacer(width = 4)
         Column {
             Text(text = title, fontSize = 12.sp, color = colorGray)
-            Text(text = text, fontSize = 13.sp, color = Color.Black, fontWeight = FontWeight.Normal)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                if (icon != null)
+                    icon()
+                Text(
+                    text = text,
+                    fontSize = 13.sp,
+                    color = Color.Black,
+                    fontWeight = FontWeight.Normal
+                )
+            }
         }
     }
 }
