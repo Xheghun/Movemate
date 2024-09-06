@@ -1,5 +1,9 @@
 package com.xheghun.movemate.presentation.screens
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutLinearInEasing
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -25,25 +29,24 @@ import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.xheghun.movemate.R
 import com.xheghun.movemate.presentation.custom_views.MoveTextField
@@ -55,6 +58,7 @@ import com.xheghun.movemate.presentation.ui.theme.colorGreyLight
 import com.xheghun.movemate.presentation.ui.theme.colorGreyText
 import com.xheghun.movemate.presentation.ui.theme.colorOrange
 import com.xheghun.movemate.presentation.ui.theme.hintTextStyle
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -62,6 +66,27 @@ fun CalculateScreen(
     navController: NavController,
     onBackPressed: () -> Unit = { navController.popBackStack() }
 ) {
+
+    val buttonScale = remember { Animatable(1f) }
+    val scope = rememberCoroutineScope()
+
+    val triggerBounce: (() -> Unit) -> Unit = { onComplete ->
+        scope.launch {
+            // Animate to a smaller scale (bouncing down)
+            buttonScale.animateTo(
+                targetValue = 0.8f,
+                animationSpec = tween(durationMillis = 100, easing = FastOutLinearInEasing)
+            )
+
+            // Settle back to normal size
+            buttonScale.animateTo(
+                targetValue = 1f,
+                animationSpec = tween(durationMillis = 100, easing = LinearOutSlowInEasing)
+            )
+
+            onComplete.invoke()
+        }
+    }
 
     val categoryOption =
         listOf("Document", "Glass", "Liquid", "Food", "Electronics", "Product", "Others")
@@ -214,8 +239,14 @@ fun CalculateScreen(
 
             //BUTTON
             Button(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = { navController.navigate(Routes.Total.name) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .scale(buttonScale.value),
+                onClick = {
+                    triggerBounce {
+                        navController.navigate(Routes.Total.name)
+                    }
+                },
                 colors = ButtonDefaults.buttonColors(containerColor = colorOrange)
             ) {
                 Text("Calculate", modifier = Modifier.padding(vertical = 8.dp))
