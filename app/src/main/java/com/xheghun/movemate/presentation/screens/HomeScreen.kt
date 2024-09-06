@@ -165,11 +165,13 @@ fun HomeScreen(navController: NavHostController) {
                                     when (index) {
                                         1 -> {
                                             isTabsVisible = false
+                                            delay(200)
                                             navController.navigate(Routes.Calculate.name)
                                         }
 
                                         2 -> {
                                             isTabsVisible = false
+                                            delay(200)
                                             navController.navigate(Routes.ShipmentHistory.name)
                                         }
                                     }
